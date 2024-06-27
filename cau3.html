@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="giaodien.css">
+</head>
+
+<body>
+    <h1>NGÂN HÀNG ABC</h1>
+    <input type="text" placeholder="Mã Sổ" id="maSo">
+    <br>
+    <input type="text" placeholder="Loại Tiết Kiệm" id="loaiTietKiem">
+    <br>
+    <input type="text" placeholder="Họ Tên" id="hoTen">
+    <br>
+    <input type="text" placeholder="CMND" id="cmnd">
+    <br>
+    <input type="text" placeholder="Ngày Mở" id="ngayMo">
+    <br>
+    <input type="number" placeholder="Số Tiền" id="soTien">
+    <br>
+    <button onclick="add()">Add</button>
+    <h2>Danh Sách</h2>
+    <table border="1" id="table"></table>
+
+
+    <script>
+
+        class STK {
+            constructor(maSo, loaiTietKiem, hoTen, cmnd, ngayMo, soTien) {
+                this.maSo = maSo;
+                this.loaiTietKiem = loaiTietKiem;
+                this.hoTen = hoTen;
+                this.cmnd = cmnd;
+                this.ngayMo = ngayMo;
+                this.soTien = soTien;
+            }
+        }
+
+        class NganHang {
+            name;
+            listSTK;
+            constructor(nameInput) {
+                this.name = nameInput;
+                this.listSTK = [];
+            }
+            addNewSTK(stk) {
+                this.listSTK.push(stk);
+            }
+            remove(index) {
+                this.listSTK.splice(index, 1)
+            }
+        }
+
+        let myBank = new NganHang("ngân hàng ABC");
+        let p1 = new STK("1", "ngắn", "Nguyễn Văn A", "123", "1/1/1111", "1000");
+        let p2 = new STK("2", "dài", "Nguyễn Văn B", "456", "1/1/1111", "2000")
+        myBank.addNewSTK(p1);
+        myBank.addNewSTK(p2);
+        console.log(myBank)
+
+
+        loadData()
+        showAll();
+
+        function saveData() {
+            let listSTKJS = JSON.stringify(myBank.listSTK)
+            localStorage.setItem("listSTK", listSTKJS);
+
+        }
+
+        function loadData() {
+            let listSTKJS = localStorage.getItem("listSTK");
+            if (listSTKJS) {
+                myBank.listSTK = JSON.parse(listSTKJS)
+            }
+        }
+
+        function validateSTK(maSo, loaiTietKiem, hoTen, cmnd, ngayMo, soTien) {
+            if (maSo.length > 5) {
+                return false;
+            }
+            if (loaiTietKiem.length > 10) {
+                return false;
+            }
+            if (hoTen.length > 30) {
+                return false;
+            }
+            if (isNaN(cmnd)) {
+                return false; 
+            }
+            if (isNaN(soTien)) {
+                return false; 
+            }
+            return true;
+            showAll()
+        }
+
+        function add() {
+            let maSoInput = document.getElementById("maSo").value;
+            let loaiTietKiemInput = document.getElementById("loaiTietKiem").value;
+            let hoTenInput = document.getElementById("hoTen").value;
+            let cmndInput = document.getElementById("cmnd").value;
+            let ngayMoInput = document.getElementById("ngayMo").value;
+            let soTienInput = document.getElementById("soTien").value;
+            if (!validateSTK(maSoInput, loaiTietKiemInput, hoTenInput, cmndInput, ngayMoInput, soTienInput)) {
+                alert("Thông tin không hợp lệ");
+                return;
+            }
+            let newSTK = new STK(maSoInput, loaiTietKiemInput, hoTenInput, cmndInput, ngayMoInput, soTienInput);
+            myBank.addNewSTK(newSTK);
+            alert("thêm thành công loại sổ " + loaiTietKiemInput);
+            showAll();
+            saveData()
+            document.getElementById("maSo").value = ""
+            document.getElementById("loaiTietKiem").value = ""
+            document.getElementById("hoTen").value = ""
+            document.getElementById("cmnd").value = ""
+            document.getElementById("ngayMo").value = ""
+            document.getElementById("soTien").value = ""
+
+        }
+
+        function remove(index) {
+            isconfirm = confirm("bạn chắc chứ")
+            if (isconfirm) {
+                myBank.remove(index);
+                alert("Xóa Thành Công");
+
+            } else {
+                alert("hủy xóa tài khoản")
+            }
+            showAll();
+            saveData()
+        }
+
+        function showAll() {
+            let list = myBank.listSTK
+            let str = `
+      <tr>
+        <th>Mã Sổ</th>
+        <th>Loại Tiết Kiệm</th>
+        <th>Họ Tên Khách Hàng</th>
+        <th>Chứng Minh Nhân Dân</th>
+        <th>Ngày Mở Sổ</th>
+        <th>Số Tiền Gửi</th>        
+        <th>Action</th>
+      </tr>
+    `;
+
+            for (let i = 0; i < list.length; i++) {
+                str += `
+        <tr>
+          <td>${list[i].maSo}</td>
+          <td>${list[i].loaiTietKiem}</td>
+          <td>${list[i].hoTen}</td>
+          <td>${list[i].cmnd}</td>
+          <td>${list[i].ngayMo}</td>
+          <td>${list[i].soTien}</td>          
+          <td><button onclick="remove(${i})">Xóa</button></td>
+        </tr>
+      `;
+            }
+            document.getElementById("table").innerHTML = str;
+        }
+
+    </script>
+</body>
+
+</html>
