@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function isPrime(number){
+            if (number <= 1) {
+                return false;
+            }
+            if (number <= 3) {
+                return true;
+            }
+            if (number % 2 === 0 || number % 3 === 0) {
+                return false;
+            }
+            let i = 5;
+            while (i * i <= number) {
+                if (number % i === 0 || number % (i + 2) === 0) {
+                    return false;
+                }
+                i += 6;
+            }
+            return true;
+        }
+
+        function inputArray() {
+            let n = parseInt(prompt('Nhập số lượng phần tử của mảng (n <= 50):'), 10);
+            if (isNaN(n) || n <= 0 || n > 50) {
+                alert("Số lượng phần tử không hợp lệ.");
+                return;
+            }
+
+            let arrayA = [];
+            for (let i = 0; i < n; i++) {
+                let num = parseInt(prompt(`Nhập phần tử thứ ${i + 1}:`));
+                if (isNaN(num)) {
+                    alert("Phần tử thứ ${i + 1} không phải số nguyên.");
+                    return;
+                }
+                arrayA.push(num);
+            }
+
+            let arrayB = [];
+            for (let i = 0; i < arrayA.length; i++) {
+                if (isPrime(arrayA[i])) {
+                    arrayB.push(arrayA[i]);
+                }
+            }
+            for (let i = 0; i < arrayA.length; i++) {
+               document.write( " Mảng a là : " + arrayA[i] + " , ");
+            }
+
+            for (let i = 0; i < arrayB.length; i++) {
+                document.write("Mảng b là : " + arrayB[i]);
+            }
+        }
+
+        inputArray();
+
+    </script>
+</body>
+</html>
